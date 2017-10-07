@@ -1,0 +1,12 @@
+CAPI=1
+[main]
+name = ::bonfire-util:0
+depend =
+
+
+[fileset rtl]
+files =  log2.vhd txt_util.vhd
+file_type=vhdlSource
+
+
+
