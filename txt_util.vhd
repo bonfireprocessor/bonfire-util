@@ -80,6 +80,9 @@ subtype t_byte is std_logic_vector(7 downto 0);
 
     -- converts a characters ASCII code to a byte (std_logic_vector 7 downto 0)
     function char_to_ascii_byte(c: character) return t_byte;
+    
+    
+ 
 
   
     -- file I/O
@@ -96,6 +99,9 @@ subtype t_byte is std_logic_vector(7 downto 0);
     -- print character to a file and start new line
     procedure print(file out_file: TEXT;
                     char:       in  character);
+                    
+   --Writes a byte as character or x<Hexvalue> when not in printable ASCII range 
+    procedure write_charbyte(file f: TEXT; c:t_byte);                    
                     
 end txt_util;
 
@@ -597,6 +603,19 @@ begin
   return std_logic_vector(to_unsigned(character'pos(c),8)); 
 end;
 
+
+--Writes a byte as character or x<Hexvalue> when not in printable ASCII range 
+procedure write_charbyte(file f: TEXT; c:t_byte) is
+variable s : string(1 to 1);
+begin
+  if unsigned(c)>=32 and unsigned(c)<=255 then
+    s(1):=character'val(to_integer(unsigned(c)));
+    write(f,s);
+  else
+    --print("non printable char" & hstr(c));
+    write(f,"x" & hstr(c)); -- non printable char
+  end if;
+end;
 
 
 
