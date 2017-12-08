@@ -1,8 +1,8 @@
 --
---	Package File Template
+--  Package File Template
 --
---	Purpose: This package defines supplemental types, subtypes, 
---		 constants, and functions 
+--  Purpose: This package defines supplemental types, subtypes,
+--       constants, and functions
 --
 --   To use any of the example code shown below, uncomment the lines and modify as necessary
 --
@@ -67,42 +67,47 @@ subtype t_byte is std_logic_vector(7 downto 0);
     -- convert a string to lower case
     function to_lower(s: string) return string;
 
-   
-    
+
+
     -- functions to convert strings into other formats
     --------------------------------------------------
-    
+
     -- converts a character into std_logic
-    function to_std_logic(c: character) return std_logic; 
-    
+    function to_std_logic(c: character) return std_logic;
+
     -- converts a string into std_logic_vector
-    function to_std_logic_vector(s: string) return std_logic_vector; 
+    function to_std_logic_vector(s: string) return std_logic_vector;
 
     -- converts a characters ASCII code to a byte (std_logic_vector 7 downto 0)
     function char_to_ascii_byte(c: character) return t_byte;
-    
-    
- 
 
-  
+
+
+
+
     -- file I/O
     -----------
-       
+
     -- read variable length string from input file
-    procedure str_read(file in_file: TEXT; 
+    procedure str_read(file in_file: TEXT;
                        res_string: out string);
-        
+
     -- print string to a file and start new line
     procedure print(file out_file: TEXT;
                     new_string: in  string);
-    
+
     -- print character to a file and start new line
     procedure print(file out_file: TEXT;
                     char:       in  character);
-                    
-   --Writes a byte as character or x<Hexvalue> when not in printable ASCII range 
-    procedure write_charbyte(file f: TEXT; c:t_byte);                    
-                    
+
+   --Writes a byte as character or x<Hexvalue> when not in printable ASCII range
+    procedure write_charbyte(file f: TEXT; c:t_byte);
+
+
+   -- string handling
+
+   procedure strcpy(dest: out string;src:string);
+
 end txt_util;
 
 
@@ -470,30 +475,30 @@ package body txt_util is
 
 -- converts a character into a std_logic
 
-function to_std_logic(c: character) return std_logic is 
+function to_std_logic(c: character) return std_logic is
     variable sl: std_logic;
     begin
       case c is
-        when 'U' => 
-           sl := 'U'; 
+        when 'U' =>
+           sl := 'U';
         when 'X' =>
            sl := 'X';
-        when '0' => 
+        when '0' =>
            sl := '0';
-        when '1' => 
+        when '1' =>
            sl := '1';
-        when 'Z' => 
+        when 'Z' =>
            sl := 'Z';
-        when 'W' => 
+        when 'W' =>
            sl := 'W';
-        when 'L' => 
+        when 'L' =>
            sl := 'L';
-        when 'H' => 
+        when 'H' =>
            sl := 'H';
-        when '-' => 
+        when '-' =>
            sl := '-';
         when others =>
-           sl := 'X'; 
+           sl := 'X';
     end case;
    return sl;
   end to_std_logic;
@@ -501,7 +506,7 @@ function to_std_logic(c: character) return std_logic is
 
 -- converts a string into std_logic_vector
 
-function to_std_logic_vector(s: string) return std_logic_vector is 
+function to_std_logic_vector(s: string) return std_logic_vector is
   variable slv: std_logic_vector(s'high-s'low downto 0);
   variable k: integer;
 begin
@@ -511,13 +516,13 @@ begin
      k      := k - 1;
   end loop;
   return slv;
-end to_std_logic_vector;                                       
-                                       
-                                       
-                                       
-                                       
-                                       
-                                       
+end to_std_logic_vector;
+
+
+
+
+
+
 ----------------
 --  file I/O  --
 ----------------
@@ -525,59 +530,59 @@ end to_std_logic_vector;
 
 
 -- read variable length string from input file
-     
-procedure str_read(file in_file: TEXT; 
+
+procedure str_read(file in_file: TEXT;
                    res_string: out string) is
-       
+
        variable l:         line;
        variable c:         character;
        variable is_string: boolean;
-       
+
    begin
-           
+
      readline(in_file, l);
      -- clear the contents of the result string
      for i in res_string'range loop
          res_string(i) := ' ';
-     end loop;   
-     -- read all characters of the line, up to the length  
+     end loop;
+     -- read all characters of the line, up to the length
      -- of the results string
      for i in res_string'range loop
         read(l, c, is_string);
         res_string(i) := c;
         if not is_string then -- found end of line
            exit;
-        end if;   
-     end loop; 
-                     
+        end if;
+     end loop;
+
 end str_read;
 
 
 -- print string to a file
 procedure print(file out_file: TEXT;
                 new_string: in  string) is
-       
+
        variable l: line;
-       
+
    begin
-      
+
      write(l, new_string);
      writeline(out_file, l);
-                     
+
 end print;
 
 
 -- print character to a file and start new line
 procedure print(file out_file: TEXT;
                 char: in  character) is
-       
+
        variable l: line;
-       
+
    begin
-      
+
      write(l, char);
      writeline(out_file, l);
-                     
+
 end print;
 
 
@@ -585,26 +590,26 @@ end print;
 -- appends contents of a string to a file until line feed occurs
 -- (LF is considered to be the end of the string)
 
-procedure str_write(file out_file: TEXT; 
+procedure str_write(file out_file: TEXT;
                     new_string: in  string) is
  begin
-      
+
    for i in new_string'range loop
       print(out_file, new_string(i));
       if new_string(i) = LF then -- end of string
          exit;
       end if;
-   end loop;               
-                     
+   end loop;
+
 end str_write;
 
 function char_to_ascii_byte(c: character) return t_byte is
 begin
-  return std_logic_vector(to_unsigned(character'pos(c),8)); 
+  return std_logic_vector(to_unsigned(character'pos(c),8));
 end;
 
 
---Writes a byte as character or x<Hexvalue> when not in printable ASCII range 
+--Writes a byte as character or x<Hexvalue> when not in printable ASCII range
 procedure write_charbyte(file f: TEXT; c:t_byte) is
 variable s : string(1 to 1);
 begin
@@ -617,6 +622,19 @@ begin
   end if;
 end;
 
+procedure strcpy(dest: out string;src:string) is
+begin
+  for i in src'range loop
+    dest(i) := src(i);
+  end loop;
+
+  for i in src'length+1 to dest'high loop
+    dest(i) := ' ';
+
+  end loop;
+
+
+end;
 
 
 end txt_util;
