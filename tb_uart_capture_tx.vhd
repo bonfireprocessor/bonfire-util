@@ -29,7 +29,34 @@ architecture testbench of tb_uart_capture_tx is
 
 subtype t_byte is std_logic_vector(7 downto 0);
 
+signal stop_i : boolean := false;
+
+-- Marker signals to analyse timing  errors in waveform diagrams 
+signal tx_sample : unsigned(3 downto 0) := to_unsigned(10,4); -- Bit Counter
+signal tx_frame : std_logic := '0'; -- Waveform marker for active frame in tx capture
+
 begin
+
+ stop <= stop_i;
+
+-- Create marker signals 
+ tx_framing : process
+   begin
+     wait until txd='1'; -- Idle condition
+     while not stop_i loop
+
+        wait until txd='0';
+        tx_sample <= to_unsigned(0,tx_sample'length);
+        for i in 1 to 9 loop
+           wait for bit_time;
+           tx_sample <= tx_sample + 1;
+        end loop;
+
+
+     end loop;
+     wait;
+   end process;
+
 
 capture_tx: process
 
@@ -39,7 +66,7 @@ capture_tx: process
    variable cnt : natural :=0;
 
    begin
-     stop <= false;
+   
      file_open(s_file,SEND_LOG_NAME,WRITE_MODE);
      wait until txd='1'; -- Idle condition
      byte:=(others=>'U');
@@ -61,7 +88,7 @@ capture_tx: process
      end loop;
      file_close(s_file);
 
-     stop<=true;
+     stop_i<=true;
      framing_errors <= f_e;
      total_count <= cnt;
      wait;
