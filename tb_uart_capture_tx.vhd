@@ -85,12 +85,13 @@ capture_tx: process
          severity warning;
        end if;
        write_charbyte(s_file,byte);
+       total_count <= cnt;
      end loop;
      file_close(s_file);
 
      stop_i<=true;
      framing_errors <= f_e;
-     total_count <= cnt;
+   --  total_count <= cnt;
      wait;
    end process;
 
