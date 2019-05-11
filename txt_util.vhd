@@ -610,10 +610,11 @@ end;
 
 
 --Writes a byte as character or x<Hexvalue> when not in printable ASCII range
+-- 01052019: write cr and lf characters as such
 procedure write_charbyte(file f: TEXT; c:t_byte) is
 variable s : string(1 to 1);
 begin
-  if unsigned(c)>=32 and unsigned(c)<=255 then
+  if (unsigned(c)>=32 and unsigned(c)<=127) or unsigned(c)=10 or unsigned(c)=13 then
     s(1):=character'val(to_integer(unsigned(c)));
     write(f,s);
   else
