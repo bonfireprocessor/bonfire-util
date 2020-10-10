@@ -1,16 +1,24 @@
-CAPI=1
-[main]
-name = ::bonfire-util:0
+CAPI=2:
 
+name: ::bonfire-util:0
 
+filesets:
+  rtl:
+    file_type: vhdlSource
+    files:
+    - log2.vhd
+    - txt_util.vhd
 
-[fileset rtl]
-files = log2.vhd txt_util.vhd
-file_type=vhdlSource
+  sim:
+    file_type: vhdlSource
+    files:
+    - tb_uart_capture_tx.vhd
 
-
-[fileset sim]
-files=tb_uart_capture_tx.vhd
-file_type=vhdlSource
-usage=sim
-
+targets:
+  default:
+    filesets:
+    - rtl
+  sim:
+    filesets:
+    - rtl
+    - sim    
