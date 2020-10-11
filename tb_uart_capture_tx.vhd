@@ -14,6 +14,7 @@ generic (
   baudrate : natural := 115200;
   bit_time : time := 8.68 us;
   SEND_LOG_NAME : string := "send.log";
+  echo_output : boolean := false; -- Set to True to echo every captured byte to std_out
   stop_mark : std_logic_vector(7 downto 0) := (others=>'U') -- Stop marker byte
 );
 port (
@@ -85,6 +86,9 @@ capture_tx: process
          severity warning;
        end if;
        write_charbyte(s_file,byte);
+       if echo_output then
+          write_charbyte(OUTPUT,byte);
+       end if;   
        total_count <= cnt;
      end loop;
      file_close(s_file);
