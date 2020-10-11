@@ -8,17 +8,10 @@ filesets:
     files:
     - log2.vhd
     - txt_util.vhd
-
-  sim:
-    file_type: vhdlSource
-    files:
     - tb_uart_capture_tx.vhd
 
 targets:
   default:
     filesets:
     - rtl
-  sim:
-    filesets:
-    - rtl
-    - sim    
+ 

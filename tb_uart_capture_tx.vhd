@@ -14,7 +14,7 @@ generic (
   baudrate : natural := 115200;
   bit_time : time := 8.68 us;
   SEND_LOG_NAME : string := "send.log";
-  stop_mark : std_logic_vector(7 downto 0) -- Stop marker byte
+  stop_mark : std_logic_vector(7 downto 0) := (others=>'U') -- Stop marker byte
 );
 port (
   txd : in std_logic;
